@@ -1,0 +1,63 @@
+diff --git a/hw/display/virtio-gpu-virgl.c b/hw/display/virtio-gpu-virgl.c
+index 145a0b3879..2fee481219 100644
+--- a/hw/display/virtio-gpu-virgl.c
++++ b/hw/display/virtio-gpu-virgl.c
+@@ -14,6 +14,7 @@
+ #include "qemu/osdep.h"
+ #include "qemu/error-report.h"
+ #include "qemu/iov.h"
++#include "qemu/drm.h"
+ #include "trace.h"
+ #include "hw/virtio/virtio.h"
+ #include "hw/virtio/virtio-gpu.h"
+@@ -1030,12 +1031,23 @@ static int virgl_make_context_current(void *opaque, int scanout_idx,
+                                    qctx);
+ }
+ 
++static int virgl_get_drm_fd(void *opaque)
++{
++    int fd = -1;
++
++    fd = qemu_drm_rendernode_open(NULL);
++
++    return fd;
++}
++
++
+ static struct virgl_renderer_callbacks virtio_gpu_3d_cbs = {
+     .version             = 1,
+     .write_fence         = virgl_write_fence,
+     .create_gl_context   = virgl_create_context,
+     .destroy_gl_context  = virgl_destroy_context,
+     .make_current        = virgl_make_context_current,
++    .get_drm_fd          = virgl_get_drm_fd,
+ };
+ 
+ static void virtio_gpu_print_stats(void *opaque)
+@@ -1094,7 +1106,7 @@ void virtio_gpu_virgl_reset(VirtIOGPU *g)
+ int virtio_gpu_virgl_init(VirtIOGPU *g)
+ {
+     int ret;
+-    uint32_t flags = 0;
++    uint32_t flags = VIRGL_RENDERER_USE_VIDEO;
+     VirtIOGPUGL *gl = VIRTIO_GPU_GL(g);
+ 
+ #if VIRGL_RENDERER_CALLBACKS_VERSION >= 4
+diff --git a/meson.build b/meson.build
+index 147097c652..707efc3861 100644
+--- a/meson.build
++++ b/meson.build
+@@ -1350,6 +1350,13 @@ if not get_option('virglrenderer').auto() or have_system or have_vhost_user_gpu
+                      method: 'pkg-config',
+                      required: get_option('virglrenderer'))
+ endif
++
++if virgl.version().version_compare('>= 1.0.0')
++  message('Enabling virglrenderer unstable APIs')
++  virgl = declare_dependency(compile_args: '-DVIRGL_RENDERER_UNSTABLE_APIS -DVIRGL_RENDERER_VENUS',
++                            dependencies: virgl)
++endif
++
+ rutabaga = not_found
+ if not get_option('rutabaga_gfx').auto() or have_system or have_vhost_user_gpu
+   rutabaga = dependency('rutabaga_gfx_ffi',
