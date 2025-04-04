@@ -65,7 +65,6 @@ Patch file can be found here:
 
 https://raw.githubusercontent.com/m...471b5bcab41842a5fe6ea9b05a09cb78f/virgl.patch
 
-or copy/paste the code from @two56bytes post
 
 Just wget it to the qemu directory.
 
