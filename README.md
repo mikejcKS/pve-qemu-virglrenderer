@@ -19,7 +19,7 @@ When you're done with the build - you will want to update the mesa-va-drivers
 
 
 apt update
-
+apt install aptitude ##use aptitude to solve any dependency issues that arise like librados-dev
 apt build-dep qemu virglrenderer
 
 apt install git build-essential
