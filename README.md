@@ -63,8 +63,8 @@ Patch the source from inside the pve-qemu/qemu directory
 
 Patch file can be found here:
 
-https://raw.githubusercontent.com/m...471b5bcab41842a5fe6ea9b05a09cb78f/virgl.patch
 
+](https://raw.githubusercontent.com/mikejcKS/pve-qemu-virglrenderer/refs/heads/main/virgl.patch)
 
 Just wget it to the qemu directory.
 
