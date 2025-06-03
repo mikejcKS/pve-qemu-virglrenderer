@@ -7,6 +7,7 @@ nano -w /etc/apt/sources.list
 paste in
 
 #deb http://deb.debian.org/debian/ bookworm-backports contrib main non-free non-free-firmware
+
 deb-src http://ftp.us.debian.org/debian bookworm main contrib non-free non-free-firmware
 
 keep the bookworm-backports commented out while you setup the build evironment for qemu because you don't want to get in a dependency loop with held back packages, etc.
@@ -20,6 +21,14 @@ When you're done with the build - you will want to update the mesa-va-drivers
 
 apt update
 apt install aptitude ##use aptitude to solve any dependency issues that arise like librados-dev
+
+aptitude install librados-dev
+
+do not accept the first option, so enter n
+
+allow the second option, enter y
+
+
 apt build-dep qemu virglrenderer
 
 apt install git build-essential
